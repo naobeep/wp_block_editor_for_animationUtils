@@ -102,6 +102,13 @@ export const renderMoveDistanceInput = (attributes, updateSettings) => {
     'leave-x-custom',
   ];
 
+  const boxCustomMoveTypes = [
+    'box-move-y-custom',
+    'box-move-x-custom',
+    'leave-box-y-custom',
+    'leave-box-x-custom',
+  ];
+
   if (customMoveTypes.includes(attributes.moveType)) {
     const isYAxis = attributes.moveType.includes('-y-');
     const axisLabel = isYAxis ? 'Y軸' : 'X軸';
@@ -112,11 +119,25 @@ export const renderMoveDistanceInput = (attributes, updateSettings) => {
       value: attributes.moveDistance || 0,
       onChange: value => {
         const numValue = parseInt(value, 10) || 0;
-        // -1000から1000までの範囲に制限
         const newMoveDistance = Math.max(-1000, Math.min(1000, numValue));
         updateSettings({ ...attributes, moveDistance: newMoveDistance });
       },
       help: '※ -1000から1000pxの範囲で設定できます。正の値は下/右方向、負の値は上/左方向への移動を表します。',
+    });
+  } else if (boxCustomMoveTypes.includes(attributes.moveType)) {
+    const isYAxis = attributes.moveType.includes('-y-');
+    const axisLabel = isYAxis ? 'Y軸' : 'X軸';
+
+    return createElement(TextControl, {
+      label: `${axisLabel}移動量（ボックスサイズの倍率）`,
+      type: 'number',
+      value: attributes.boxSizeMultiplier || 1,
+      onChange: value => {
+        const numValue = parseFloat(value) || 0;
+        const newMultiplier = Math.max(-10, Math.min(10, numValue));
+        updateSettings({ ...attributes, boxSizeMultiplier: newMultiplier });
+      },
+      help: '※ -10から10倍の範囲で設定できます。正の値は下/右方向、負の値は上/左方向への移動を表します。',
     });
   }
   return null;
@@ -133,10 +154,6 @@ export const renderStartPointOption = (attributes, updateSettings) => {
   }
   return null;
 };
-
-
-
-
 
 const getTypeEffectWithCount = (baseType, count) => {
   if (!baseType || baseType === 'none') return '';
@@ -230,5 +247,4 @@ export const renderTypeSpecificOptions = (attributes, updateSettings) => {
     default:
       return null;
   }
-
 };

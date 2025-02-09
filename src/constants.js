@@ -10,7 +10,8 @@ export const getDefaultSettings = () => ({
   delayValue: 0, // 追加
   easingType: 'none',
   moveType: 'none',
-  moveDistance: 100, // デフォルト値として100を設定
+  moveDistance: 0,
+  boxSizeMultiplier: 1,
   startPoint: 'none',
   stripeCount: 5,
   windmillCount: 1,
@@ -49,10 +50,22 @@ const commonMoveOptions = [
 
 const boxMoveOptions = [
   ...commonMoveOptions,
-  { label: 'Y軸にボックスサイズ分移動', value: 'move-box-y' },
-  { label: 'X軸にボックスサイズ分移動', value: 'move-box-x' },
-  { label: 'Y軸でボックスサイズ分離脱', value: 'leave-box-y' },
-  { label: 'X軸でボックスサイズ分離脱', value: 'leave-box-x' },
+  {
+    label: 'Y軸にボックスサイズ分移動（倍率指定）',
+    value: 'box-move-y-custom',
+  },
+  {
+    label: 'X軸にボックスサイズ分移動（倍率指定）',
+    value: 'box-move-x-custom',
+  },
+  {
+    label: 'Y軸でボックスサイズ分離脱（倍率指定）',
+    value: 'leave-box-y-custom',
+  },
+  {
+    label: 'X軸でボックスサイズ分離脱（倍率指定）',
+    value: 'leave-box-x-custom',
+  },
 ];
 
 // moveOptionsを動的に取得する関数
@@ -99,5 +112,4 @@ export const wipeSettings = {
     max: 360,
     label: 'ウインドミルの数',
   },
-
 };

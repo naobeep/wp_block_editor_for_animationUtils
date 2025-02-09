@@ -81,12 +81,26 @@ export const parseClassNames = className => {
     return cls.match(/^(move-[xy]|leave-[xy])-?\d+$/);
   });
 
+  // ボックスサイズベースの移動の検出
+  const boxMoveClass = classes.find(cls => {
+    return cls.match(/^(box-move-[xy]|leave-box-[xy])-?[\d.]+$/);
+  });
+
   if (moveClass) {
     const match = moveClass.match(/^(move-[xy]|leave-[xy])(-?\d+)$/);
     if (match) {
       const [, baseType, distance] = match;
       settings.moveType = `${baseType}-custom`;
       settings.moveDistance = parseInt(distance, 10);
+    }
+  } else if (boxMoveClass) {
+    const match = boxMoveClass.match(
+      /^(box-move-[xy]|leave-box-[xy])(-?[\d.]+)$/
+    );
+    if (match) {
+      const [, baseType, multiplier] = match;
+      settings.moveType = `${baseType}-custom`;
+      settings.boxSizeMultiplier = parseFloat(multiplier);
     }
   } else {
     // 既存の移動タイプの検出（変更なし）
@@ -95,10 +109,6 @@ export const parseClassNames = className => {
         'horizontal',
         'vertical',
         'vertical-up',
-        'move-box-y',
-        'move-box-x',
-        'leave-box-y',
-        'leave-box-x',
         'leave-horizontal',
         'leave-vertical',
         'leave-vertical-up',
@@ -158,6 +168,9 @@ export const isAnimationClass = className => {
     if (className.match(/^(move-[xy]|leave-[xy])-?\d+$/)) {
       return true;
     }
+    if (className.match(/^(box-move-[xy]|leave-box-[xy])-?[\d.]+$/)) {
+      return true;
+    }
     return className === prefix || className.startsWith(`${prefix}`);
   });
 };
@@ -201,10 +214,19 @@ export const generateAnimationClasses = settings => {
       'leave-x-custom',
     ];
 
+    const boxCustomMoveTypes = [
+      'box-move-y-custom',
+      'box-move-x-custom',
+      'leave-box-y-custom',
+      'leave-box-x-custom',
+    ];
+
     if (customMoveTypes.includes(settings.moveType)) {
       const baseType = settings.moveType.replace('-custom', '');
-      // 数値をそのまま（負の値も含めて）クラス名に追加
       classes.push(`${baseType}${settings.moveDistance}`);
+    } else if (boxCustomMoveTypes.includes(settings.moveType)) {
+      const baseType = settings.moveType.replace('-custom', '');
+      classes.push(`${baseType}${settings.boxSizeMultiplier}`);
     } else {
       classes.push(settings.moveType);
     }
