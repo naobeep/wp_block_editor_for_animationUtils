@@ -1,0 +1,21 @@
+{
+  "name": "block-animation",
+  "version": "1.0.0",
+  "description": "Block animation extension for WordPress editor",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start"
+  },
+  "dependencies": {
+    "@wordpress/block-editor": "^12.0.0",
+    "@wordpress/blocks": "^12.0.0",
+    "@wordpress/components": "^23.0.0",
+    "@wordpress/compose": "^6.0.0",
+    "@wordpress/element": "^5.0.0",
+    "@wordpress/hooks": "^3.0.0",
+    "@wordpress/i18n": "^4.0.0"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^30.10.0"
+  }
+}
