@@ -44,6 +44,13 @@ export const parseClassNames = className => {
     settings.durationValue = parseFloat(duration.replace('duration', ''));
   }
 
+  // Delay の検出
+  const delay = classes.find(cls => cls.startsWith('delay'));
+  if (delay) {
+    settings.useDelay = true;
+    settings.delayValue = parseFloat(delay.replace('delay', ''));
+  }
+
   // イージングの検出
   const easing = classes.find(cls =>
     ['linear', 'back', 'bounce', 'elastic', 'stepped', 'slowMo'].includes(cls)
@@ -85,6 +92,7 @@ export const isAnimationClass = className => {
     'wipe',
     'root-margin',
     'duration',
+    'delay',
     'linear',
     'back',
     'bounce',
@@ -140,6 +148,10 @@ export const generateAnimationClasses = settings => {
   ) {
     classes.push(`duration${settings.durationValue}`);
   }
+
+    if (settings.useDelay) {
+      classes.push(`delay${settings.delayValue}`);
+    }
 
   if (settings.easingType && settings.easingType !== 'none') {
     classes.push(settings.easingType);

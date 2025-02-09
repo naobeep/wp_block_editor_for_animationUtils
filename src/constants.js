@@ -6,12 +6,13 @@ export const getDefaultSettings = () => ({
   rootMarginValue: '',
   useDuration: false,
   durationValue: 1,
+  useDelay: false, // 追加
+  delayValue: 0, // 追加
   easingType: 'none',
   moveType: 'none',
   startPoint: 'none',
-  stripeCount: 5, // ストライプの数
-  windmillCount: 1, // ウインドミルの数
-  // effectClass: '',
+  stripeCount: 5,
+  windmillCount: 1,
 });
 
 export const animationOptions = [

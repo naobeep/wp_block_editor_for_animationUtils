@@ -18,6 +18,7 @@ import {
 import {
   renderRootMarginInput,
   renderDurationInput,
+  renderDelayInput,
   renderEasingOption,
   renderMoveOption,
   renderStartPointOption,
@@ -71,6 +72,12 @@ const withAnimationClasses = createHigherOrderComponent(BlockEdit => {
             updateSettings({ ...attributes, useDuration: value }),
         }),
         renderDurationInput(attributes, updateSettings),
+        createElement(CheckboxControl, {
+          label: 'Delay のカスタマイズ',
+          checked: attributes.useDelay || false,
+          onChange: value => updateSettings({ ...attributes, useDelay: value }),
+        }),
+        renderDelayInput(attributes, updateSettings),
         renderEasingOption(attributes, updateSettings),
         renderMoveOption(attributes, updateSettings),
         renderStartPointOption(attributes, updateSettings),
@@ -148,6 +155,14 @@ wp.hooks.addFilter(
         className += ` duration${attributes.durationValue}`;
       }
 
+      if (
+        attributes.useDelay &&
+        attributes.delayValue &&
+        attributes.delayValue !== 0
+      ) {
+        className += ` delay${attributes.delayValue}`;
+      }
+
       if (attributes.easingType && attributes.easingType !== 'none') {
         className += ` ${attributes.easingType}`;
       }
@@ -159,14 +174,11 @@ wp.hooks.addFilter(
       if (attributes.startPoint && attributes.startPoint !== 'none') {
         className += ` ${attributes.startPoint}`;
       }
-
-      // extraProps.className = extraProps.className
-      //   ? `${extraProps.className} ${className}`
-      //   : className;
     }
     return extraProps;
   }
 );
+
 
 // テストや再利用のためにエクスポート
 export default withAnimationClasses;

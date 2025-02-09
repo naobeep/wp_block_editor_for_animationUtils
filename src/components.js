@@ -50,6 +50,26 @@ export const renderDurationInput = (attributes, updateSettings) => {
   return null;
 };
 
+export const renderDelayInput = (attributes, updateSettings) => {
+  if (attributes.useDelay) {
+    return createElement(RangeControl, {
+      label: 'Delay 倍率',
+      value: attributes.delayValue || 0,
+      onChange: value => updateSettings({ ...attributes, delayValue: value }),
+      min: 0,
+      max: 10,
+      step: 0.1,
+      marks: [
+        {
+          value: 0,
+          label: '遅延なし',
+        },
+      ],
+    });
+  }
+  return null;
+};
+
 export const renderEasingOption = (attributes, updateSettings) => {
   if (['box-animation', 'text-animation'].includes(attributes.animationClass)) {
     return createElement(SelectControl, {
