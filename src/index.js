@@ -21,6 +21,7 @@ import {
   renderDelayInput,
   renderEasingOption,
   renderMoveOption,
+  renderMoveDistanceInput,
   renderStartPointOption,
   renderTypeSpecificOptions,
 } from './components';
@@ -80,6 +81,7 @@ const withAnimationClasses = createHigherOrderComponent(BlockEdit => {
         renderDelayInput(attributes, updateSettings),
         renderEasingOption(attributes, updateSettings),
         renderMoveOption(attributes, updateSettings),
+        renderMoveDistanceInput(attributes, updateSettings),
         renderStartPointOption(attributes, updateSettings),
       ];
     };
@@ -171,6 +173,22 @@ wp.hooks.addFilter(
         className += ` ${attributes.moveType}`;
       }
 
+      if (attributes.moveType && attributes.moveType !== 'none') {
+        const customMoveTypes = [
+          'move-y-custom',
+          'move-x-custom',
+          'leave-y-custom',
+          'leave-x-custom',
+        ];
+
+        if (customMoveTypes.includes(attributes.moveType)) {
+          const baseType = attributes.moveType.replace('-custom', '');
+          className += ` ${baseType}${attributes.moveDistance}`;
+        } else {
+          className += ` ${attributes.moveType}`;
+        }
+      }
+
       if (attributes.startPoint && attributes.startPoint !== 'none') {
         className += ` ${attributes.startPoint}`;
       }
@@ -178,7 +196,6 @@ wp.hooks.addFilter(
     return extraProps;
   }
 );
-
 
 // テストや再利用のためにエクスポート
 export default withAnimationClasses;

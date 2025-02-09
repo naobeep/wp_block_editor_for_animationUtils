@@ -76,6 +76,37 @@ export const parseClassNames = className => {
   );
   if (moveType) settings.moveType = moveType;
 
+  // 移動タイプと距離の検出
+  const moveClass = classes.find(cls => {
+    return cls.match(/^(move-[xy]|leave-[xy])\d+$/);
+  });
+
+  if (moveClass) {
+    const match = moveClass.match(/^(move-[xy]|leave-[xy])(\d+)$/);
+    if (match) {
+      const [, baseType, distance] = match;
+      settings.moveType = `${baseType}-custom`;
+      settings.moveDistance = parseInt(distance, 10);
+    }
+  } else {
+    // 既存の移動タイプの検出
+    const moveType = classes.find(cls =>
+      [
+        'horizontal',
+        'vertical',
+        'vertical-up',
+        'move-box-y',
+        'move-box-x',
+        'leave-box-y',
+        'leave-box-x',
+        'leave-horizontal',
+        'leave-vertical',
+        'leave-vertical-up',
+      ].includes(cls)
+    );
+    if (moveType) settings.moveType = moveType;
+  }
+
   // 開始位置の検出
   const startPoint = classes.find(cls =>
     ['shuffle', 'end', 'center', 'edge'].includes(cls)
@@ -122,7 +153,7 @@ export const isAnimationClass = className => {
     'scrub',
     'pin',
     'stripe',
-    'windmill'
+    'windmill',
   ].some(prefix => className === prefix || className.startsWith(`${prefix}`));
 };
 
@@ -149,16 +180,32 @@ export const generateAnimationClasses = settings => {
     classes.push(`duration${settings.durationValue}`);
   }
 
-    if (settings.useDelay) {
-      classes.push(`delay${settings.delayValue}`);
-    }
+  if (settings.useDelay) {
+    classes.push(`delay${settings.delayValue}`);
+  }
 
   if (settings.easingType && settings.easingType !== 'none') {
     classes.push(settings.easingType);
   }
 
+  // if (settings.moveType && settings.moveType !== 'none') {
+  //   classes.push(settings.moveType);
+  // }
+
   if (settings.moveType && settings.moveType !== 'none') {
-    classes.push(settings.moveType);
+    const customMoveTypes = [
+      'move-y-custom',
+      'move-x-custom',
+      'leave-y-custom',
+      'leave-x-custom',
+    ];
+
+    if (customMoveTypes.includes(settings.moveType)) {
+      const baseType = settings.moveType.replace('-custom', '');
+      classes.push(`${baseType}${settings.moveDistance}`);
+    } else {
+      classes.push(settings.moveType);
+    }
   }
 
   if (settings.startPoint && settings.startPoint !== 'none') {

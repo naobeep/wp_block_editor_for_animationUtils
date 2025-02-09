@@ -94,6 +94,30 @@ export const renderMoveOption = (attributes, updateSettings) => {
   return null;
 };
 
+export const renderMoveDistanceInput = (attributes, updateSettings) => {
+  const customMoveTypes = [
+    'move-y-custom',
+    'move-x-custom',
+    'leave-y-custom',
+    'leave-x-custom',
+  ];
+
+  if (customMoveTypes.includes(attributes.moveType)) {
+    return createElement(RangeControl, {
+      label: '移動距離 (px)',
+      value: attributes.moveDistance || 100,
+      onChange: value => {
+        const newMoveDistance = Math.max(0, Math.min(1000, value));
+        updateSettings({ ...attributes, moveDistance: newMoveDistance });
+      },
+      min: 0,
+      max: 1000,
+      step: 10,
+    });
+  }
+  return null;
+};
+
 export const renderStartPointOption = (attributes, updateSettings) => {
   if (['text-animation'].includes(attributes.animationClass)) {
     return createElement(SelectControl, {

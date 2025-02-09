@@ -10,6 +10,7 @@ export const getDefaultSettings = () => ({
   delayValue: 0, // 追加
   easingType: 'none',
   moveType: 'none',
+  moveDistance: 100, // デフォルト値として100を設定
   startPoint: 'none',
   stripeCount: 5,
   windmillCount: 1,
@@ -37,10 +38,10 @@ const commonMoveOptions = [
   { label: '水平に移動', value: 'horizontal' },
   { label: '画面外から垂直に落下', value: 'vertical' },
   { label: '画面外から垂直に上昇', value: 'vertical-up' },
-  { label: 'Y軸で移動', value: 'move-y' },
-  { label: 'X軸で移動', value: 'move-x' },
-  { label: 'Y軸で離脱', value: 'leave-y' },
-  { label: 'X軸で離脱', value: 'leave-x' },
+  { label: 'Y軸で移動（数値指定）', value: 'move-y-custom' },
+  { label: 'X軸で移動（数値指定）', value: 'move-x-custom' },
+  { label: 'Y軸で離脱（数値指定）', value: 'leave-y-custom' },
+  { label: 'X軸で離脱（数値指定）', value: 'leave-x-custom' },
   { label: '水平に離脱', value: 'leave-horizontal' },
   { label: '垂直に離脱（上方向）', value: 'leave-vertical' },
   { label: '垂直に離脱（下方向）', value: 'leave-vertical-down' },
