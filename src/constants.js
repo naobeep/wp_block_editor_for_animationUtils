@@ -9,6 +9,9 @@ export const getDefaultSettings = () => ({
   easingType: 'none',
   moveType: 'none',
   startPoint: 'none',
+  stripeCount: 5, // ストライプの数
+  windmillCount: 1, // ウインドミルの数
+  // effectClass: '',
 });
 
 export const animationOptions = [
@@ -28,7 +31,7 @@ export const easingOptions = [
   { label: 'SlowMo', value: 'slowMo' },
 ];
 
-export const moveOptions = [
+const commonMoveOptions = [
   { label: 'なし', value: 'none' },
   { label: '水平に移動', value: 'horizontal' },
   { label: '画面外から垂直に落下', value: 'vertical' },
@@ -37,12 +40,26 @@ export const moveOptions = [
   { label: 'X軸で移動', value: 'move-x' },
   { label: 'Y軸で離脱', value: 'leave-y' },
   { label: 'X軸で離脱', value: 'leave-x' },
-  { label: 'Leave-Box-Y', value: 'leave-box-y' },
-  { label: 'Leave-Box-X', value: 'leave-box-x' },
   { label: '水平に離脱', value: 'leave-horizontal' },
-  { label: '垂直に離脱', value: 'leave-vertical' },
-  { label: 'Leave-Vertical-up', value: 'leave-vertical-up' },
+  { label: '垂直に離脱（上方向）', value: 'leave-vertical' },
+  { label: '垂直に離脱（下方向）', value: 'leave-vertical-down' },
 ];
+
+const boxMoveOptions = [
+  ...commonMoveOptions,
+  { label: 'Y軸にボックスサイズ分移動', value: 'move-box-y' },
+  { label: 'X軸にボックスサイズ分移動', value: 'move-box-x' },
+  { label: 'Y軸でボックスサイズ分離脱', value: 'leave-box-y' },
+  { label: 'X軸でボックスサイズ分離脱', value: 'leave-box-x' },
+];
+
+// moveOptionsを動的に取得する関数
+export const getMoveOptions = animationType => {
+  if (animationType === 'box-animation') {
+    return boxMoveOptions;
+  }
+  return commonMoveOptions;
+};
 
 export const startPointOptions = [
   { label: 'なし（文頭から）', value: 'none' },
@@ -67,3 +84,18 @@ export const wipeOptions = [
   { label: 'ストライプ', value: 'stripe' },
   { label: 'ウインドミル', value: 'windmill' },
 ];
+
+// ワイプエフェクトの設定範囲を修正
+export const wipeSettings = {
+  stripe: {
+    min: 1,
+    max: 100,
+    label: 'ストライプの数',
+  },
+  windmill: {
+    min: 1,
+    max: 360,
+    label: 'ウインドミルの数',
+  },
+
+};

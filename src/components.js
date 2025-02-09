@@ -11,8 +11,9 @@ import {
   textAnimationOptions,
   wipeOptions,
   easingOptions,
-  moveOptions,
   startPointOptions,
+  getMoveOptions,
+  wipeSettings,
 } from './constants';
 
 export const renderRootMarginInput = (attributes, updateSettings) => {
@@ -66,7 +67,7 @@ export const renderMoveOption = (attributes, updateSettings) => {
     return createElement(SelectControl, {
       label: '要素の移動',
       value: attributes.moveType || 'none',
-      options: moveOptions,
+      options: getMoveOptions(attributes.animationClass),
       onChange: value => updateSettings({ ...attributes, moveType: value }),
     });
   }
@@ -85,23 +86,101 @@ export const renderStartPointOption = (attributes, updateSettings) => {
   return null;
 };
 
+
+
+
+
+const getTypeEffectWithCount = (baseType, count) => {
+  if (!baseType || baseType === 'none') return '';
+  return `${baseType}${count}`;
+};
+
+// 現在のtypeEffectから基本タイプを取得する関数を追加
+const getBaseEffectType = typeEffect => {
+  if (!typeEffect || typeEffect === 'none') return 'none';
+  return typeEffect.replace(/\d+$/, '');
+};
+
+export const renderWipeCountInput = (attributes, updateSettings) => {
+  if (attributes.animationClass !== 'wipe') return null;
+
+  const baseEffectType = getBaseEffectType(attributes.typeEffect);
+  if (!['stripe', 'windmill'].includes(baseEffectType)) return null;
+
+  const setting = wipeSettings[baseEffectType];
+  const currentValue =
+    baseEffectType === 'stripe'
+      ? attributes.stripeCount
+      : attributes.windmillCount;
+
+  return createElement(TextControl, {
+    label: setting.label,
+    type: 'number',
+    value: currentValue,
+    min: setting.min,
+    max: setting.max,
+    onChange: value => {
+      const numValue = parseInt(value, 10);
+      if (isNaN(numValue) || numValue < setting.min || numValue > setting.max) {
+        return;
+      }
+
+      const updates =
+        baseEffectType === 'stripe'
+          ? { stripeCount: numValue }
+          : { windmillCount: numValue };
+
+      updateSettings({
+        ...attributes,
+        ...updates,
+        typeEffect: getTypeEffectWithCount(baseEffectType, numValue),
+      });
+    },
+  });
+};
+
 export const renderTypeSpecificOptions = (attributes, updateSettings) => {
   switch (attributes.animationClass) {
     case 'text-animation':
-      return createElement(SelectControl, {
-        label: '特殊なテキストアニメーション',
-        value: attributes.typeEffect || '',
-        options: textAnimationOptions,
-        onChange: value => updateSettings({ ...attributes, typeEffect: value }),
-      });
+      return createElement('div', null, [
+        createElement(SelectControl, {
+          label: '特殊なテキストアニメーション',
+          value: attributes.typeEffect || '',
+          options: textAnimationOptions,
+          onChange: value =>
+            updateSettings({ ...attributes, typeEffect: value }),
+        }),
+      ]);
     case 'wipe':
-      return createElement(SelectControl, {
-        label: 'ワイプエフェクト',
-        value: attributes.typeEffect || '',
-        options: wipeOptions,
-        onChange: value => updateSettings({ ...attributes, typeEffect: value }),
-      });
+      return createElement('div', null, [
+        createElement(SelectControl, {
+          label: 'ワイプエフェクト',
+          value: getBaseEffectType(attributes.typeEffect),
+          options: wipeOptions,
+          onChange: value => {
+            if (value === 'none') {
+              updateSettings({
+                ...attributes,
+                typeEffect: 'none',
+                stripeCount: 1,
+                windmillCount: 1,
+              });
+            } else {
+              const count =
+                value === 'stripe'
+                  ? attributes.stripeCount
+                  : attributes.windmillCount;
+              updateSettings({
+                ...attributes,
+                typeEffect: getTypeEffectWithCount(value, count),
+              });
+            }
+          },
+        }),
+        renderWipeCountInput(attributes, updateSettings),
+      ]);
     default:
       return null;
   }
+
 };
