@@ -103,16 +103,20 @@ export const renderMoveDistanceInput = (attributes, updateSettings) => {
   ];
 
   if (customMoveTypes.includes(attributes.moveType)) {
-    return createElement(RangeControl, {
-      label: '移動距離 (px)',
-      value: attributes.moveDistance || 100,
+    const isYAxis = attributes.moveType.includes('-y-');
+    const axisLabel = isYAxis ? 'Y軸' : 'X軸';
+
+    return createElement(TextControl, {
+      label: `${axisLabel}移動距離 (px)`,
+      type: 'number',
+      value: attributes.moveDistance || 0,
       onChange: value => {
-        const newMoveDistance = Math.max(0, Math.min(1000, value));
+        const numValue = parseInt(value, 10) || 0;
+        // -1000から1000までの範囲に制限
+        const newMoveDistance = Math.max(-1000, Math.min(1000, numValue));
         updateSettings({ ...attributes, moveDistance: newMoveDistance });
       },
-      min: 0,
-      max: 1000,
-      step: 10,
+      help: '※ -1000から1000pxの範囲で設定できます。正の値は下/右方向、負の値は上/左方向への移動を表します。',
     });
   }
   return null;

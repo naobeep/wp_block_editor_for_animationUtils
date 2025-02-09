@@ -78,18 +78,18 @@ export const parseClassNames = className => {
 
   // 移動タイプと距離の検出
   const moveClass = classes.find(cls => {
-    return cls.match(/^(move-[xy]|leave-[xy])\d+$/);
+    return cls.match(/^(move-[xy]|leave-[xy])-?\d+$/);
   });
 
   if (moveClass) {
-    const match = moveClass.match(/^(move-[xy]|leave-[xy])(\d+)$/);
+    const match = moveClass.match(/^(move-[xy]|leave-[xy])(-?\d+)$/);
     if (match) {
       const [, baseType, distance] = match;
       settings.moveType = `${baseType}-custom`;
       settings.moveDistance = parseInt(distance, 10);
     }
   } else {
-    // 既存の移動タイプの検出
+    // 既存の移動タイプの検出（変更なし）
     const moveType = classes.find(cls =>
       [
         'horizontal',
@@ -154,7 +154,12 @@ export const isAnimationClass = className => {
     'pin',
     'stripe',
     'windmill',
-  ].some(prefix => className === prefix || className.startsWith(`${prefix}`));
+  ].some(prefix => {
+    if (className.match(/^(move-[xy]|leave-[xy])-?\d+$/)) {
+      return true;
+    }
+    return className === prefix || className.startsWith(`${prefix}`);
+  });
 };
 
 export const generateAnimationClasses = settings => {
@@ -188,10 +193,6 @@ export const generateAnimationClasses = settings => {
     classes.push(settings.easingType);
   }
 
-  // if (settings.moveType && settings.moveType !== 'none') {
-  //   classes.push(settings.moveType);
-  // }
-
   if (settings.moveType && settings.moveType !== 'none') {
     const customMoveTypes = [
       'move-y-custom',
@@ -202,6 +203,7 @@ export const generateAnimationClasses = settings => {
 
     if (customMoveTypes.includes(settings.moveType)) {
       const baseType = settings.moveType.replace('-custom', '');
+      // 数値をそのまま（負の値も含めて）クラス名に追加
       classes.push(`${baseType}${settings.moveDistance}`);
     } else {
       classes.push(settings.moveType);
