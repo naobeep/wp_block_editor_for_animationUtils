@@ -1,6 +1,6 @@
 // utils.js
 import { getDefaultSettings } from './constants';
-import { getBaseEffectType } from "./components";
+import { getBaseEffectType } from './components';
 
 export const parseClassNames = className => {
   if (!className) return getDefaultSettings();
@@ -64,6 +64,13 @@ export const parseClassNames = className => {
     ['linear', 'back', 'bounce', 'elastic', 'stepped', 'slowMo'].includes(cls)
   );
   if (easing) settings.easingType = easing;
+
+  // スケールの検出
+  const scaleClass = classes.find(cls => cls.startsWith('scale'));
+  if (scaleClass) {
+    settings.useScale = true;
+    settings.scaleValue = parseFloat(scaleClass.replace('scale', ''));
+  }
 
   // 移動タイプの検出
   const moveType = classes.find(cls =>
@@ -182,6 +189,9 @@ export const isAnimationClass = className => {
     if (className.match(/^-?\d+deg$/)) {
       return true;
     }
+    if (className.match(/^scale-?[\d.]+$/)) {
+      return true;
+    }
     return className === prefix || className.startsWith(`${prefix}`);
   });
 };
@@ -255,6 +265,10 @@ export const generateAnimationClasses = settings => {
     settings.angleValue !== 0
   ) {
     classes.push(`${settings.angleValue}deg`);
+  }
+
+  if (settings.useScale && settings.scaleValue !== 1) {
+    classes.push(`scale${settings.scaleValue}`);
   }
 
   return classes;

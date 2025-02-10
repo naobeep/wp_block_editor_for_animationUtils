@@ -11,6 +11,8 @@ export const getDefaultSettings = () => ({
   easingType: 'none',
   moveType: 'none',
   moveDistance: 0,
+  useScale: false,
+  scaleValue: 1,
   boxSizeMultiplier: 1,
   startPoint: 'none',
   useAngle: false,

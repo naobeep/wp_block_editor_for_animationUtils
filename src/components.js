@@ -144,10 +144,29 @@ export const renderMoveDistanceInput = (attributes, updateSettings) => {
   return null;
 };
 
+export const renderScaleInput = (attributes, updateSettings) => {
+  if (
+    ['box-animation', 'text-animation'].includes(attributes.animationClass) &&
+    attributes.useScale
+  ) {
+    return createElement(TextControl, {
+      label: 'スケール値',
+      type: 'number',
+      value: attributes.scaleValue || 1,
+      onChange: value => {
+        const numValue = parseFloat(value) || 1;
+        updateSettings({ ...attributes, scaleValue: numValue });
+      },
+      help: '※ マイナスの値も設定できます。1は等倍を表します。',
+    });
+  }
+  return null;
+};
+
 export const renderStartPointOption = (attributes, updateSettings) => {
   if (['text-animation'].includes(attributes.animationClass)) {
     return createElement(SelectControl, {
-      label: '文字アニメーションの開始点',
+      label: '文字アニメーションの発火順',
       value: attributes.startPoint || 'none',
       options: startPointOptions,
       onChange: value => updateSettings({ ...attributes, startPoint: value }),
