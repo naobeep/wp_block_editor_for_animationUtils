@@ -11,6 +11,8 @@ export const getDefaultSettings = () => ({
   easingType: 'none',
   moveType: 'none',
   moveDistance: 0,
+  rotateType: 'none',
+  rotateValue: 360,
   useScale: false,
   scaleValue: 1,
   boxSizeMultiplier: 1,
@@ -79,6 +81,13 @@ export const getMoveOptions = animationType => {
   }
   return commonMoveOptions;
 };
+
+export const rotateOptions = [
+  { label: 'なし', value: 'none' },
+  { label: '回転', value: 'rotate' },
+  { label: 'X軸で回転', value: 'rotateX' },
+  { label: 'Y軸で回転', value: 'rotateY' },
+];
 
 export const startPointOptions = [
   { label: 'なし（文頭から）', value: 'none' },

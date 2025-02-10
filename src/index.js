@@ -25,6 +25,7 @@ import {
   renderStartPointOption,
   renderTypeSpecificOptions,
   renderScaleInput,
+  renderRotateOptions
 } from './components';
 
 const withAnimationClasses = createHigherOrderComponent(BlockEdit => {
@@ -93,6 +94,7 @@ const withAnimationClasses = createHigherOrderComponent(BlockEdit => {
         renderEasingOption(attributes, updateSettings),
         renderMoveOption(attributes, updateSettings),
         renderMoveDistanceInput(attributes, updateSettings),
+        renderRotateOptions(attributes, updateSettings),
         renderStartPointOption(attributes, updateSettings),
       ];
     };

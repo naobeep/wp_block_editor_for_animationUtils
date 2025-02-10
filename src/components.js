@@ -3,7 +3,7 @@ import {
   TextControl,
   RangeControl,
   SelectControl,
-  CheckboxControl
+  CheckboxControl,
 } from '@wordpress/components';
 
 import { createElement } from '@wordpress/element';
@@ -15,6 +15,7 @@ import {
   startPointOptions,
   getMoveOptions,
   wipeSettings,
+  rotateOptions
 } from './constants';
 
 export const renderRootMarginInput = (attributes, updateSettings) => {
@@ -140,6 +141,36 @@ export const renderMoveDistanceInput = (attributes, updateSettings) => {
       },
       help: '※ -10から10倍の範囲で設定できます。正の値は下/右方向、負の値は上/左方向への移動を表します。',
     });
+  }
+  return null;
+};
+
+export const renderRotateOptions = (attributes, updateSettings) => {
+  if (['box-animation', 'text-animation'].includes(attributes.animationClass)) {
+    return createElement('div', null, [
+      createElement(SelectControl, {
+        label: '回転',
+        value: attributes.rotateType || 'none',
+        options: rotateOptions,
+        onChange: value =>
+          updateSettings({
+            ...attributes,
+            rotateType: value,
+            rotateValue: value === 'none' ? 0 : attributes.rotateValue || 0,
+          }),
+      }),
+      attributes.rotateType !== 'none' &&
+        createElement(TextControl, {
+          label: '回転角度 (度)',
+          type: 'number',
+          value: attributes.rotateValue || 0,
+          onChange: value => {
+            const numValue = parseInt(value, 10) || 0;
+            updateSettings({ ...attributes, rotateValue: numValue });
+          },
+          help: '※ 360度で1回転。マイナスの値も設定できます。',
+        }),
+    ]);
   }
   return null;
 };

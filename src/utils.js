@@ -72,6 +72,20 @@ export const parseClassNames = className => {
     settings.scaleValue = parseFloat(scaleClass.replace('scale', ''));
   }
 
+  // 回転の検出
+  const rotateClass = classes.find(cls => {
+    return cls.match(/^(rotate|rotateX|rotateY)-?\d+$/);
+  });
+
+  if (rotateClass) {
+    const match = rotateClass.match(/^(rotate|rotateX|rotateY)(-?\d+)$/);
+    if (match) {
+      const [, type, value] = match;
+      settings.rotateType = type;
+      settings.rotateValue = parseInt(value, 10);
+    }
+  }
+
   // 移動タイプの検出
   const moveType = classes.find(cls =>
     [
@@ -179,6 +193,10 @@ export const isAnimationClass = className => {
     'pin',
     'stripe',
     'windmill',
+    'scale',
+    'rotate',
+    'rotateX',
+    'rotateY',
   ].some(prefix => {
     if (className.match(/^(move-[xy]|leave-[xy])-?\d+$/)) {
       return true;
@@ -190,6 +208,9 @@ export const isAnimationClass = className => {
       return true;
     }
     if (className.match(/^scale-?[\d.]+$/)) {
+      return true;
+    }
+    if (className.match(/^(rotate|rotateX|rotateY)-?\d+$/)) {
       return true;
     }
     return className === prefix || className.startsWith(`${prefix}`);
@@ -225,6 +246,10 @@ export const generateAnimationClasses = settings => {
 
   if (settings.easingType && settings.easingType !== 'none') {
     classes.push(settings.easingType);
+  }
+
+  if (settings.rotateType && settings.rotateType !== 'none') {
+    classes.push(`${settings.rotateType}${settings.rotateValue}`);
   }
 
   if (settings.moveType && settings.moveType !== 'none') {
