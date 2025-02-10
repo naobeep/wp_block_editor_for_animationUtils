@@ -3,6 +3,7 @@ import {
   TextControl,
   RangeControl,
   SelectControl,
+  CheckboxControl
 } from '@wordpress/components';
 
 import { createElement } from '@wordpress/element';
@@ -155,13 +156,13 @@ export const renderStartPointOption = (attributes, updateSettings) => {
   return null;
 };
 
-const getTypeEffectWithCount = (baseType, count) => {
+export const getTypeEffectWithCount = (baseType, count) => {
   if (!baseType || baseType === 'none') return '';
   return `${baseType}${count}`;
 };
 
 // 現在のtypeEffectから基本タイプを取得する関数を追加
-const getBaseEffectType = typeEffect => {
+export const getBaseEffectType = typeEffect => {
   if (!typeEffect || typeEffect === 'none') return 'none';
   return typeEffect.replace(/\d+$/, '');
 };
@@ -204,6 +205,52 @@ export const renderWipeCountInput = (attributes, updateSettings) => {
   });
 };
 
+export const renderAngleInput = (attributes, updateSettings) => {
+  // defaultまたはstripeの場合のみ表示
+  const allowedTypes = ['none', 'stripe'];
+  if (
+    attributes.animationClass === 'wipe' &&
+    allowedTypes.includes(getBaseEffectType(attributes.typeEffect)) &&
+    attributes.useAngle
+  ) {
+    return createElement(RangeControl, {
+      label: 'アングル（度）',
+      value: attributes.angleValue || 0,
+      onChange: value => {
+        // -360から360までの値に制限
+        const newValue = Math.max(-360, Math.min(360, value));
+        updateSettings({ ...attributes, angleValue: newValue });
+      },
+      min: -360,
+      max: 360,
+      step: 1,
+      marks: [
+        {
+          value: 0,
+          label: '0°',
+        },
+        {
+          value: 90,
+          label: '90°',
+        },
+        {
+          value: -90,
+          label: '-90°',
+        },
+        {
+          value: 180,
+          label: '180°',
+        },
+        {
+          value: -180,
+          label: '-180°',
+        },
+      ],
+    });
+  }
+  return null;
+};
+
 export const renderTypeSpecificOptions = (attributes, updateSettings) => {
   switch (attributes.animationClass) {
     case 'text-animation':
@@ -217,6 +264,9 @@ export const renderTypeSpecificOptions = (attributes, updateSettings) => {
         }),
       ]);
     case 'wipe':
+      const allowedTypes = ['none', 'stripe'];
+      const baseEffectType = getBaseEffectType(attributes.typeEffect);
+
       return createElement('div', null, [
         createElement(SelectControl, {
           label: 'ワイプエフェクト',
@@ -242,6 +292,14 @@ export const renderTypeSpecificOptions = (attributes, updateSettings) => {
             }
           },
         }),
+        allowedTypes.includes(baseEffectType) &&
+          createElement(CheckboxControl, {
+            label: 'アングルのカスタマイズ',
+            checked: attributes.useAngle || false,
+            onChange: value =>
+              updateSettings({ ...attributes, useAngle: value }),
+          }),
+        renderAngleInput(attributes, updateSettings),
         renderWipeCountInput(attributes, updateSettings),
       ]);
     default:

@@ -1,5 +1,6 @@
 // utils.js
 import { getDefaultSettings } from './constants';
+import { getBaseEffectType } from "./components";
 
 export const parseClassNames = className => {
   if (!className) return getDefaultSettings();
@@ -29,6 +30,13 @@ export const parseClassNames = className => {
   // ワイプ効果の検出
   const wipeEffect = classes.find(cls => ['stripe', 'windmill'].includes(cls));
   if (wipeEffect) settings.typeEffect = wipeEffect;
+
+  // アングルの検出
+  const angleClass = classes.find(cls => cls.match(/^-?\d+deg$/));
+  if (angleClass) {
+    settings.useAngle = true;
+    settings.angleValue = parseInt(angleClass, 10);
+  }
 
   // Root Margin の検出
   const rootMargin = classes.find(cls => cls.startsWith('root-margin'));
@@ -171,6 +179,9 @@ export const isAnimationClass = className => {
     if (className.match(/^(box-move-[xy]|leave-box-[xy])-?[\d.]+$/)) {
       return true;
     }
+    if (className.match(/^-?\d+deg$/)) {
+      return true;
+    }
     return className === prefix || className.startsWith(`${prefix}`);
   });
 };
@@ -234,6 +245,16 @@ export const generateAnimationClasses = settings => {
 
   if (settings.startPoint && settings.startPoint !== 'none') {
     classes.push(settings.startPoint);
+  }
+
+  // アングルクラスの追加
+  if (
+    settings.animationClass === 'wipe' &&
+    ['none', 'stripe'].includes(getBaseEffectType(settings.typeEffect)) &&
+    settings.useAngle &&
+    settings.angleValue !== 0
+  ) {
+    classes.push(`${settings.angleValue}deg`);
   }
 
   return classes;

@@ -13,6 +13,8 @@ export const getDefaultSettings = () => ({
   moveDistance: 0,
   boxSizeMultiplier: 1,
   startPoint: 'none',
+  useAngle: false,
+  angleValue: 0,
   stripeCount: 5,
   windmillCount: 1,
 });
