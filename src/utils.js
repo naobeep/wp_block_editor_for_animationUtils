@@ -152,6 +152,11 @@ export const parseClassNames = className => {
   );
   if (startPoint) settings.startPoint = startPoint;
 
+  // amount クラスの検出
+  if (classes.includes('amount')) {
+    settings.useAmount = true;
+  }
+
   return settings;
 };
 
@@ -197,6 +202,7 @@ export const isAnimationClass = className => {
     'rotate',
     'rotateX',
     'rotateY',
+    'amount',
   ].some(prefix => {
     if (className.match(/^(move-[xy]|leave-[xy])-?\d+$/)) {
       return true;
@@ -294,6 +300,10 @@ export const generateAnimationClasses = settings => {
 
   if (settings.useScale && settings.scaleValue !== 1) {
     classes.push(`scale${settings.scaleValue}`);
+  }
+
+  if (settings.useAmount) {
+    classes.push('amount');
   }
 
   return classes;

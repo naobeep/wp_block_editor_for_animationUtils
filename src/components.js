@@ -15,7 +15,7 @@ import {
   startPointOptions,
   getMoveOptions,
   wipeSettings,
-  rotateOptions
+  rotateOptions,
 } from './constants';
 
 export const renderRootMarginInput = (attributes, updateSettings) => {
@@ -168,7 +168,7 @@ export const renderRotateOptions = (attributes, updateSettings) => {
             const numValue = parseInt(value, 10) || 0;
             updateSettings({ ...attributes, rotateValue: numValue });
           },
-          help: '※ 360度で1回転。マイナスの値も設定できます。',
+          help: '※ 360度で1回転。マイナスの値を設定すると回転方向が逆になります。',
         }),
     ]);
   }
@@ -201,6 +201,17 @@ export const renderStartPointOption = (attributes, updateSettings) => {
       value: attributes.startPoint || 'none',
       options: startPointOptions,
       onChange: value => updateSettings({ ...attributes, startPoint: value }),
+    });
+  }
+  return null;
+};
+
+export const renderAmountOption = (attributes, updateSettings) => {
+  if (attributes.animationClass === 'text-animation') {
+    return createElement(CheckboxControl, {
+      label: '一定期間内にアニメーションを完了させる',
+      checked: attributes.useAmount || false,
+      onChange: value => updateSettings({ ...attributes, useAmount: value }),
     });
   }
   return null;

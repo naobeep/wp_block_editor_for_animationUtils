@@ -17,6 +17,7 @@ export const getDefaultSettings = () => ({
   scaleValue: 1,
   boxSizeMultiplier: 1,
   startPoint: 'none',
+  useAmount: false,
   useAngle: false,
   angleValue: 0,
   stripeCount: 5,
