@@ -6,8 +6,10 @@ export const getDefaultSettings = () => ({
   rootMarginValue: '',
   useDuration: false,
   durationValue: 1,
-  useDelay: false, // 追加
-  delayValue: 0, // 追加
+  useDelay: false,
+  delayValue: 0,
+  useOpacity: false,
+  initialOpacity: 0,
   easingType: 'none',
   moveType: 'none',
   moveDistance: 0,

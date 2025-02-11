@@ -20,6 +20,7 @@ import {
   renderDurationInput,
   renderDelayInput,
   renderEasingOption,
+  renderOpacityInput,
   renderMoveOption,
   renderMoveDistanceInput,
   renderStartPointOption,
@@ -85,17 +86,27 @@ const withAnimationClasses = createHigherOrderComponent(BlockEdit => {
         ['box-animation', 'text-animation'].includes(
           attributes.animationClass
         ) &&
-        createElement(CheckboxControl, {
-          label: 'スケールのカスタマイズ',
-          checked: attributes.useScale || false,
-          onChange: value =>
-            updateSettings({ ...attributes, useScale: value }),
-        }),
-        renderScaleInput(attributes, updateSettings),
+          createElement(CheckboxControl, {
+            label: '初期透過度のカスタマイズ',
+            checked: attributes.useOpacity || false,
+            onChange: value =>
+              updateSettings({ ...attributes, useOpacity: value }),
+          }),
+        renderOpacityInput(attributes, updateSettings),
         renderEasingOption(attributes, updateSettings),
         renderMoveOption(attributes, updateSettings),
         renderMoveDistanceInput(attributes, updateSettings),
         renderRotateOptions(attributes, updateSettings),
+        ['box-animation', 'text-animation'].includes(
+          attributes.animationClass
+        ) &&
+          createElement(CheckboxControl, {
+            label: 'スケールのカスタマイズ',
+            checked: attributes.useScale || false,
+            onChange: value =>
+              updateSettings({ ...attributes, useScale: value }),
+          }),
+        renderScaleInput(attributes, updateSettings),
         renderStartPointOption(attributes, updateSettings),
         renderAmountOption(attributes, updateSettings),
       ];

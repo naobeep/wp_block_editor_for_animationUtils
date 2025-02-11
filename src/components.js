@@ -85,6 +85,39 @@ export const renderEasingOption = (attributes, updateSettings) => {
   return null;
 };
 
+export const renderOpacityInput = (attributes, updateSettings) => {
+  if (attributes.useOpacity) {
+    return createElement(RangeControl, {
+      label: '初期透過度',
+      value: attributes.initialOpacity || 0,
+      onChange: value => {
+        const newValue = Math.max(0, Math.min(100, value));
+        updateSettings({ ...attributes, initialOpacity: newValue });
+      },
+      min: 0,
+      max: 100,
+      step: 1,
+      marks: [
+        {
+          value: 0,
+          label: '0%',
+        },
+        {
+          value: 50,
+          label: '50%',
+        },
+        {
+          value: 100,
+          label: '100%',
+        },
+      ],
+      help: '※ 0%で完全に透明、100%で完全に不透明になります。',
+    });
+  }
+  return null;
+};
+
+
 export const renderMoveOption = (attributes, updateSettings) => {
   if (['box-animation', 'text-animation'].includes(attributes.animationClass)) {
     return createElement(SelectControl, {

@@ -79,6 +79,14 @@ export const parseClassNames = className => {
   );
   if (easing) settings.easingType = easing;
 
+  // 初期透過度の検出
+  const alphaClass = classes.find(cls => cls.match(/^alpha\d+$/));
+  if (alphaClass) {
+    const opacity = parseInt(alphaClass.replace('alpha', ''), 10);
+    settings.useOpacity = true;
+    settings.initialOpacity = opacity;
+  }
+
   // スケールの検出
   const scaleClass = classes.find(cls => cls.startsWith('scale'));
   if (scaleClass) {
@@ -225,6 +233,9 @@ export const isAnimationClass = className => {
     'rotateY',
     'amount',
   ].some(prefix => {
+    if (className.match(/^alpha\d+$/)) {
+      return true;
+    }
     if (className.match(/^(move-[xy]|leave-[xy])-?\d+$/)) {
       return true;
     }
@@ -279,6 +290,15 @@ export const generateAnimationClasses = settings => {
 
   if (settings.easingType && settings.easingType !== 'none') {
     classes.push(settings.easingType);
+  }
+
+  if (
+    ['box-animation', 'text-animation'].includes(settings.animationClass) &&
+    settings.useOpacity &&
+    typeof settings.initialOpacity === 'number' &&
+    settings.initialOpacity > 0
+  ) {
+    classes.push(`alpha${settings.initialOpacity}`);
   }
 
   if (settings.rotateType && settings.rotateType !== 'none') {
