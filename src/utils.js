@@ -27,9 +27,23 @@ export const parseClassNames = className => {
   );
   if (textEffect) settings.typeEffect = textEffect;
 
-  // ワイプ効果の検出
-  const wipeEffect = classes.find(cls => ['stripe', 'windmill'].includes(cls));
-  if (wipeEffect) settings.typeEffect = wipeEffect;
+  // ワイプエフェクトとその数値の検出
+  const wipeEffectClass = classes.find(cls =>
+    cls.match(/^(stripe|windmill)\d+$/)
+  );
+
+  if (wipeEffectClass) {
+    const match = wipeEffectClass.match(/^(stripe|windmill)(\d+)$/);
+    if (match) {
+      const [, effectType, count] = match;
+      settings.typeEffect = wipeEffectClass;
+      if (effectType === 'stripe') {
+        settings.stripeCount = parseInt(count, 10);
+      } else if (effectType === 'windmill') {
+        settings.windmillCount = parseInt(count, 10);
+      }
+    }
+  }
 
   // アングルの検出
   const angleClass = classes.find(cls => cls.match(/^-?\d+deg$/));
@@ -196,8 +210,6 @@ export const isAnimationClass = className => {
     'whirl-wind2',
     'scrub',
     'pin',
-    'stripe',
-    'windmill',
     'scale',
     'rotate',
     'rotateX',
@@ -217,6 +229,9 @@ export const isAnimationClass = className => {
       return true;
     }
     if (className.match(/^(rotate|rotateX|rotateY)-?\d+$/)) {
+      return true;
+    }
+    if (className.match(/^(stripe|windmill)\d+$/)) {
       return true;
     }
     return className === prefix || className.startsWith(`${prefix}`);

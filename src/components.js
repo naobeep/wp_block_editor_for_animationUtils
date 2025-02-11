@@ -26,6 +26,7 @@ export const renderRootMarginInput = (attributes, updateSettings) => {
       value: attributes.rootMarginValue || '',
       onChange: value =>
         updateSettings({ ...attributes, rootMarginValue: value }),
+      help: 'スクロールしたときに、画面の上から何％の位置まで来たら動作を開始するかを設定します。数値が100なら要素がビューポートに入った瞬間に動作し、数値が小さいほど画面の上部に近づくまで動作しません。',
     });
   }
   return null;
@@ -353,6 +354,7 @@ export const renderTypeSpecificOptions = (attributes, updateSettings) => {
             }
           },
         }),
+        renderWipeCountInput(attributes, updateSettings),
         allowedTypes.includes(baseEffectType) &&
           createElement(CheckboxControl, {
             label: 'アングルのカスタマイズ',
@@ -361,7 +363,6 @@ export const renderTypeSpecificOptions = (attributes, updateSettings) => {
               updateSettings({ ...attributes, useAngle: value }),
           }),
         renderAngleInput(attributes, updateSettings),
-        renderWipeCountInput(attributes, updateSettings),
       ]);
     default:
       return null;
