@@ -81,17 +81,17 @@ const withAnimationClasses = createHigherOrderComponent(BlockEdit => {
           checked: attributes.useDelay || false,
           onChange: value => updateSettings({ ...attributes, useDelay: value }),
         }),
+        renderDelayInput(attributes, updateSettings),
         ['box-animation', 'text-animation'].includes(
           attributes.animationClass
         ) &&
-          createElement(CheckboxControl, {
-            label: 'スケールのカスタマイズ',
-            checked: attributes.useScale || false,
-            onChange: value =>
-              updateSettings({ ...attributes, useScale: value }),
-          }),
+        createElement(CheckboxControl, {
+          label: 'スケールのカスタマイズ',
+          checked: attributes.useScale || false,
+          onChange: value =>
+            updateSettings({ ...attributes, useScale: value }),
+        }),
         renderScaleInput(attributes, updateSettings),
-        renderDelayInput(attributes, updateSettings),
         renderEasingOption(attributes, updateSettings),
         renderMoveOption(attributes, updateSettings),
         renderMoveDistanceInput(attributes, updateSettings),
