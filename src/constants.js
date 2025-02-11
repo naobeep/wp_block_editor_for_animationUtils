@@ -124,6 +124,6 @@ export const wipeSettings = {
   windmill: {
     min: 1,
     max: 360,
-    label: 'ウインドミルの数',
+    label: '羽の数',
   },
 };
