@@ -100,6 +100,15 @@ export const parseClassNames = className => {
     }
   }
 
+  // 回転半径の検出
+  const rotateRadiusClass = classes.find(cls =>
+    cls.match(/^rotate-radius-?\d+$/)
+  );
+  if (rotateRadiusClass) {
+    const radius = parseInt(rotateRadiusClass.replace('rotate-radius', ''), 10);
+    settings.rotateRadius = radius;
+  }
+
   // 移動タイプの検出
   const moveType = classes.find(cls =>
     [
@@ -234,6 +243,9 @@ export const isAnimationClass = className => {
     if (className.match(/^(stripe|windmill)\d+$/)) {
       return true;
     }
+    if (className.match(/^rotate-radius-?\d+$/)) {
+      return true;
+    }
     return className === prefix || className.startsWith(`${prefix}`);
   });
 };
@@ -271,6 +283,14 @@ export const generateAnimationClasses = settings => {
 
   if (settings.rotateType && settings.rotateType !== 'none') {
     classes.push(`${settings.rotateType}${settings.rotateValue}`);
+  }
+
+  if (
+    ['rotate', 'rotateX'].includes(settings.rotateType) &&
+    typeof settings.rotateRadius === 'number' &&
+    settings.rotateRadius !== 0
+  ) {
+    classes.push(`rotate-radius${settings.rotateRadius}`);
   }
 
   if (settings.moveType && settings.moveType !== 'none') {

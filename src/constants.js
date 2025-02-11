@@ -13,6 +13,7 @@ export const getDefaultSettings = () => ({
   moveDistance: 0,
   rotateType: 'none',
   rotateValue: 360,
+  rotateRadius: 0,
   useScale: false,
   scaleValue: 1,
   boxSizeMultiplier: 1,

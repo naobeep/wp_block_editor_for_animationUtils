@@ -171,6 +171,17 @@ export const renderRotateOptions = (attributes, updateSettings) => {
           },
           help: '※ 360度で1回転。マイナスの値を設定すると回転方向が逆になります。',
         }),
+      ['rotate', 'rotateX'].includes(attributes.rotateType) &&
+        createElement(TextControl, {
+          label: '回転半径 (px)',
+          type: 'number',
+          value: attributes.rotateRadius || 0,
+          onChange: value => {
+            const numValue = parseInt(value, 10) || 0;
+            updateSettings({ ...attributes, rotateRadius: numValue });
+          },
+          help: '※ 回転の中心をY軸方向にずらす距離を指定します。',
+        }),
     ]);
   }
   return null;
