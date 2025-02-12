@@ -21,12 +21,12 @@ import {
 export const renderRootMarginInput = (attributes, updateSettings) => {
   if (attributes.useRootMargin) {
     return createElement(TextControl, {
-      label: 'Root Margin 値',
+      label: 'アニメーション開始位置',
       type: 'number',
       value: attributes.rootMarginValue || '',
       onChange: value =>
         updateSettings({ ...attributes, rootMarginValue: value }),
-      help: 'スクロールしたときに、画面の上から何％の位置まで来たら動作を開始するかを設定します。数値が100なら要素がビューポートに入った瞬間に動作し、数値が小さいほど画面の上部に近づくまで動作しません。',
+      help: '要素が画面上端から何%の位置に来たらアニメーションを開始するかを設定します。100%で要素が画面に入った瞬間、0%で画面上端に到達した時点でアニメーションを開始します。',
     });
   }
   return null;
@@ -35,7 +35,7 @@ export const renderRootMarginInput = (attributes, updateSettings) => {
 export const renderDurationInput = (attributes, updateSettings) => {
   if (attributes.useDuration) {
     return createElement(RangeControl, {
-      label: 'Duration 倍率',
+      label: 'アニメーション時間',
       value: attributes.durationValue || 1,
       onChange: value =>
         updateSettings({ ...attributes, durationValue: value }),
@@ -48,6 +48,7 @@ export const renderDurationInput = (attributes, updateSettings) => {
           label: '標準',
         },
       ],
+      help: '数値が大きいほどアニメーションがゆっくりになります。1が標準の速さです。',
     });
   }
   return null;
@@ -56,7 +57,7 @@ export const renderDurationInput = (attributes, updateSettings) => {
 export const renderDelayInput = (attributes, updateSettings) => {
   if (attributes.useDelay) {
     return createElement(RangeControl, {
-      label: 'Delay 倍率',
+      label: '開始遅延時間',
       value: attributes.delayValue || 0,
       onChange: value => updateSettings({ ...attributes, delayValue: value }),
       min: 0,
@@ -68,18 +69,7 @@ export const renderDelayInput = (attributes, updateSettings) => {
           label: '遅延なし',
         },
       ],
-    });
-  }
-  return null;
-};
-
-export const renderEasingOption = (attributes, updateSettings) => {
-  if (['box-animation', 'text-animation'].includes(attributes.animationClass)) {
-    return createElement(SelectControl, {
-      label: 'イージング',
-      value: attributes.easingType || 'none',
-      options: easingOptions,
-      onChange: value => updateSettings({ ...attributes, easingType: value }),
+      help: 'アニメーション開始までの待機時間を設定します。標準的なアニメーション時間を1とし、数値を指定することで本来同時に開始するアニメーションに時間差をつくり、順番に動かす演出が行えます。',
     });
   }
   return null;
@@ -88,7 +78,7 @@ export const renderEasingOption = (attributes, updateSettings) => {
 export const renderOpacityInput = (attributes, updateSettings) => {
   if (attributes.useOpacity) {
     return createElement(RangeControl, {
-      label: '初期透過度',
+      label: '初期透明度',
       value: attributes.initialOpacity || 0,
       onChange: value => {
         const newValue = Math.max(0, Math.min(100, value));
@@ -100,7 +90,7 @@ export const renderOpacityInput = (attributes, updateSettings) => {
       marks: [
         {
           value: 0,
-          label: '0%',
+          label: '透明',
         },
         {
           value: 50,
@@ -108,23 +98,10 @@ export const renderOpacityInput = (attributes, updateSettings) => {
         },
         {
           value: 100,
-          label: '100%',
+          label: '不透明',
         },
       ],
-      help: '※ 0%で完全に透明、100%で完全に不透明になります。',
-    });
-  }
-  return null;
-};
-
-
-export const renderMoveOption = (attributes, updateSettings) => {
-  if (['box-animation', 'text-animation'].includes(attributes.animationClass)) {
-    return createElement(SelectControl, {
-      label: '要素の移動',
-      value: attributes.moveType || 'none',
-      options: getMoveOptions(attributes.animationClass),
-      onChange: value => updateSettings({ ...attributes, moveType: value }),
+      help: 'アニメーション開始前の透明度を設定します。0%で完全に透明、100%で完全に不透明になります。',
     });
   }
   return null;
@@ -147,7 +124,7 @@ export const renderMoveDistanceInput = (attributes, updateSettings) => {
 
   if (customMoveTypes.includes(attributes.moveType)) {
     const isYAxis = attributes.moveType.includes('-y-');
-    const axisLabel = isYAxis ? 'Y軸' : 'X軸';
+    const axisLabel = isYAxis ? '上下' : '左右';
 
     return createElement(TextControl, {
       label: `${axisLabel}移動距離 (px)`,
@@ -158,14 +135,14 @@ export const renderMoveDistanceInput = (attributes, updateSettings) => {
         const newMoveDistance = Math.max(-1000, Math.min(1000, numValue));
         updateSettings({ ...attributes, moveDistance: newMoveDistance });
       },
-      help: '※ -1000から1000pxの範囲で設定できます。正の値は下/右方向、負の値は上/左方向への移動を表します。',
+      help: '移動距離をピクセル単位で指定します。正の値は下/右方向、負の値は上/左方向への移動を表します。-1000から1000pxの範囲で設定できます。',
     });
   } else if (boxCustomMoveTypes.includes(attributes.moveType)) {
     const isYAxis = attributes.moveType.includes('-y-');
-    const axisLabel = isYAxis ? 'Y軸' : 'X軸';
+    const axisLabel = isYAxis ? '上下' : '左右';
 
     return createElement(TextControl, {
-      label: `${axisLabel}移動量（ボックスサイズの倍率）`,
+      label: `${axisLabel}移動量（ボックスサイズ倍率）`,
       type: 'number',
       value: attributes.boxSizeMultiplier || 1,
       onChange: value => {
@@ -173,7 +150,26 @@ export const renderMoveDistanceInput = (attributes, updateSettings) => {
         const newMultiplier = Math.max(-10, Math.min(10, numValue));
         updateSettings({ ...attributes, boxSizeMultiplier: newMultiplier });
       },
-      help: '※ -10から10倍の範囲で設定できます。正の値は下/右方向、負の値は上/左方向への移動を表します。',
+      help: 'ボックスの高さ/幅を基準とした移動量を指定します。1でボックスサイズと同じ距離、2で2倍の距離を移動します。-10から10倍の範囲で設定できます。',
+    });
+  }
+  return null;
+};
+
+export const renderScaleInput = (attributes, updateSettings) => {
+  if (
+    ['box-animation', 'text-animation'].includes(attributes.animationClass) &&
+    attributes.useScale
+  ) {
+    return createElement(TextControl, {
+      label: '拡大・縮小率',
+      type: 'number',
+      value: attributes.scaleValue || 1,
+      onChange: value => {
+        const numValue = parseFloat(value) || 1;
+        updateSettings({ ...attributes, scaleValue: numValue });
+      },
+      help: '1が等倍、2で2倍、0.5で半分のサイズになります。マイナスの値を設定すると反転します。',
     });
   }
   return null;
@@ -195,45 +191,50 @@ export const renderRotateOptions = (attributes, updateSettings) => {
       }),
       attributes.rotateType !== 'none' &&
         createElement(TextControl, {
-          label: '回転角度 (度)',
+          label: '回転角度',
           type: 'number',
           value: attributes.rotateValue || 0,
           onChange: value => {
             const numValue = parseInt(value, 10) || 0;
             updateSettings({ ...attributes, rotateValue: numValue });
           },
-          help: '※ 360度で1回転。マイナスの値を設定すると回転方向が逆になります。',
+          help: '360度で1回転します。マイナスの値を設定すると逆方向に回転します。',
         }),
       ['rotate', 'rotateX'].includes(attributes.rotateType) &&
         createElement(TextControl, {
-          label: '回転半径 (px)',
+          label: '回転中心のオフセット',
           type: 'number',
           value: attributes.rotateRadius || 0,
           onChange: value => {
             const numValue = parseInt(value, 10) || 0;
             updateSettings({ ...attributes, rotateRadius: numValue });
           },
-          help: '※ 回転の中心をY軸方向にずらす距離を指定します。',
+          help: '回転の中心をY軸方向にずらす距離をピクセル単位で指定します。',
         }),
     ]);
   }
   return null;
 };
 
-export const renderScaleInput = (attributes, updateSettings) => {
-  if (
-    ['box-animation', 'text-animation'].includes(attributes.animationClass) &&
-    attributes.useScale
-  ) {
-    return createElement(TextControl, {
-      label: 'スケール値',
-      type: 'number',
-      value: attributes.scaleValue || 1,
-      onChange: value => {
-        const numValue = parseFloat(value) || 1;
-        updateSettings({ ...attributes, scaleValue: numValue });
-      },
-      help: '※ マイナスの値も設定できます。1は等倍を表します。',
+export const renderEasingOption = (attributes, updateSettings) => {
+  if (['box-animation', 'text-animation'].includes(attributes.animationClass)) {
+    return createElement(SelectControl, {
+      label: 'イージング',
+      value: attributes.easingType || 'none',
+      options: easingOptions,
+      onChange: value => updateSettings({ ...attributes, easingType: value }),
+    });
+  }
+  return null;
+};
+
+export const renderMoveOption = (attributes, updateSettings) => {
+  if (['box-animation', 'text-animation'].includes(attributes.animationClass)) {
+    return createElement(SelectControl, {
+      label: '要素の移動',
+      value: attributes.moveType || 'none',
+      options: getMoveOptions(attributes.animationClass),
+      onChange: value => updateSettings({ ...attributes, moveType: value }),
     });
   }
   return null;
@@ -267,7 +268,6 @@ export const getTypeEffectWithCount = (baseType, count) => {
   return `${baseType}${count}`;
 };
 
-// 現在のtypeEffectから基本タイプを取得する関数を追加
 export const getBaseEffectType = typeEffect => {
   if (!typeEffect || typeEffect === 'none') return 'none';
   return typeEffect.replace(/\d+$/, '');
