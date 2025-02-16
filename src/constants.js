@@ -112,11 +112,11 @@ export const wipeSettings = {
   stripe: {
     min: 1,
     max: 100,
-    label: 'ストライプの数',
+    label: 'ストライプの本数',
   },
   windmill: {
     min: 1,
     max: 360,
-    label: '羽の数',
+    label: '円を分割する扇の数',
   },
 };
