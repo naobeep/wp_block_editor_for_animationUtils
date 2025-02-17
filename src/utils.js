@@ -29,11 +29,11 @@ export const parseClassNames = className => {
 
   // ワイプエフェクトとその数値の検出
   const wipeEffectClass = classes.find(cls =>
-    cls.match(/^(stripe|windmill)\d+$/)
+    cls.match(/^(stripe|windmill|ripple)\d+$/)
   );
 
   if (wipeEffectClass) {
-    const match = wipeEffectClass.match(/^(stripe|windmill)(\d+)$/);
+    const match = wipeEffectClass.match(/^(stripe|windmill|ripple)(\d+)$/);
     if (match) {
       const [, effectType, count] = match;
       settings.typeEffect = wipeEffectClass;
@@ -41,6 +41,8 @@ export const parseClassNames = className => {
         settings.stripeCount = parseInt(count, 10);
       } else if (effectType === 'windmill') {
         settings.windmillCount = parseInt(count, 10);
+      } else if (effectType === 'ripple') {
+        settings.rippleCount = parseInt(count, 10);
       }
     }
   }
@@ -251,7 +253,7 @@ export const isAnimationClass = className => {
     if (className.match(/^(rotate|rotateX|rotateY)-?\d+$/)) {
       return true;
     }
-    if (className.match(/^(stripe|windmill)\d+$/)) {
+    if (className.match(/^(stripe|windmill|ripple)\d+$/)) {
       return true;
     }
     if (className.match(/^rotate-radius-?\d+$/)) {

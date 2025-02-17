@@ -25,6 +25,7 @@ export const getDefaultSettings = () => ({
   angleValue: 0,
   stripeCount: 5,
   windmillCount: 1,
+  rippleCount: 1,
 });
 
 // constants.js
@@ -97,6 +98,7 @@ export const wipeOptions = [
   { label: '通常のスライド', value: 'none' },
   { label: 'ストライプ効果', value: 'stripe' },
   { label: '扇形効果', value: 'windmill' },
+  { label: '波紋効果', value: 'ripple' },
 ];
 
 // moveOptionsを動的に取得する関数
@@ -118,5 +120,10 @@ export const wipeSettings = {
     min: 1,
     max: 360,
     label: '円を分割する扇の数',
+  },
+  ripple: {
+    min: 1,
+    max: 100,
+    label: '波紋の数',
   },
 };

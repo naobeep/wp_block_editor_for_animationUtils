@@ -277,13 +277,15 @@ export const renderWipeCountInput = (attributes, updateSettings) => {
   if (attributes.animationClass !== 'wipe') return null;
 
   const baseEffectType = getBaseEffectType(attributes.typeEffect);
-  if (!['stripe', 'windmill'].includes(baseEffectType)) return null;
+  if (!['stripe', 'windmill', 'ripple'].includes(baseEffectType)) return null;
 
   const setting = wipeSettings[baseEffectType];
   const currentValue =
     baseEffectType === 'stripe'
       ? attributes.stripeCount
-      : attributes.windmillCount;
+      : baseEffectType === 'windmill'
+      ? attributes.windmillCount
+      : attributes.rippleCount;
 
   return createElement(TextControl, {
     label: setting.label,
@@ -300,7 +302,9 @@ export const renderWipeCountInput = (attributes, updateSettings) => {
       const updates =
         baseEffectType === 'stripe'
           ? { stripeCount: numValue }
-          : { windmillCount: numValue };
+          : baseEffectType === 'windmill'
+          ? { windmillCount: numValue }
+          : { rippleCount: numValue };
 
       updateSettings({
         ...attributes,
@@ -384,13 +388,14 @@ export const renderTypeSpecificOptions = (attributes, updateSettings) => {
                 ...attributes,
                 typeEffect: 'none',
                 stripeCount: 1,
-                windmillCount: 1,
               });
             } else {
               const count =
                 value === 'stripe'
                   ? attributes.stripeCount
-                  : attributes.windmillCount;
+                  : value === 'windmill'
+                  ? attributes.windmillCount
+                  : attributes.rippleCount;
               updateSettings({
                 ...attributes,
                 typeEffect: getTypeEffectWithCount(value, count),
