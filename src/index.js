@@ -1,4 +1,9 @@
-// index.js
+/*!
+ * block-classes.js 1.1.0
+ * https://github.com/naobeep/wp_block_editor_for_animationUtils
+ *
+ * @author: naobeep
+ */
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { Fragment } from '@wordpress/element';
 import { InspectorControls } from '@wordpress/blockEditor';
